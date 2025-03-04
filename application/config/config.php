@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 define('CLOUDINARY_CLOUD_NAME', 'dz2f1qfeg');
 define('CLOUDINARY_API_KEY', '689249459199856');
-define('CLOUDINARY_API_SECRET', 'q3zITLVu-YACEI7XfoxFhCb7HlE');
+define('CLOUDINARY_API_SECRET','q3zITLVu-YACEI7XfoxFhCb7HlE');
 
 
 function my_error_handler($errno, $errstr, $errfile, $errline)
@@ -89,7 +89,7 @@ $config['base_url'] = 'http://localhost:8088/RestApi/';
 */
 
 
-$config['base_url'] = 'http://localhost/soap_client/';
+$config['base_url'] = 'https://ifako-local-government.onrender.com/';
 
  /* 
 |--------------------------------------------------------------------------
