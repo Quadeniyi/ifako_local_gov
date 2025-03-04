@@ -73,26 +73,51 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-$db['default'] = array(
-	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '@Ummat360',
-	'database' => 'local_government',
-	//'database' => 'frontshop_frontshop_ussd',
-	'dbdriver' => 'mysqli',
-	'dbprefix' => '',
-	'pconnect' => FALSE,
-	//'db_debug' => (ENVIRONMENT !== 'production'),
-	'db_debug' => FALSE,
-	'cache_on' => FALSE,
-	'cachedir' => '',
-	'char_set' => 'utf8',
-	'dbcollat' => 'utf8_general_ci',
-	'swap_pre' => '',
-	'encrypt' => FALSE,
-	'compress' => FALSE,
-	'stricton' => FALSE,
-	'failover' => array(),
-	'save_queries' => TRUE
-);
+// Check if running locally or on Render
+if ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') {
+    // Local Database Connection (For Development)
+    $db['default'] = array(
+        'dsn'       => '',
+        'hostname'  => 'localhost',
+        'username'  => 'root',  // Change if your local MySQL username is different
+        'password'  => '@Ummat360',  // Change if your local MySQL has a password
+        'database'  => 'local_government',  // Change if your local database name is different
+        'dbdriver'  => 'mysqli',
+        'dbprefix'  => '',
+        'pconnect'  => FALSE,
+        'db_debug'  => (ENVIRONMENT !== 'production'),
+        'cache_on'  => FALSE,
+        'cachedir'  => '',
+        'char_set'  => 'utf8',
+        'dbcollat'  => 'utf8_general_ci',
+        'swap_pre'  => '',
+        'encrypt'   => FALSE,
+        'compress'  => FALSE,
+        'stricton'  => FALSE,
+        'failover'  => array(),
+        'save_queries' => TRUE
+    );
+} else {
+    // Remote Database Connection (For Render.com)
+    $db['default'] = array(
+        'dsn'       => '',
+        'hostname'  => getenv('DB_HOST'),
+        'username'  => getenv('DB_USERNAME'),
+        'password'  => getenv('DB_PASSWORD'),
+        'database'  => getenv('DB_DATABASE'),
+        'dbdriver'  => 'mysqli',
+        'dbprefix'  => '',
+        'pconnect'  => FALSE,
+        'db_debug'  => (ENVIRONMENT !== 'production'),
+        'cache_on'  => FALSE,
+        'cachedir'  => '',
+        'char_set'  => 'utf8',
+        'dbcollat'  => 'utf8_general_ci',
+        'swap_pre'  => '',
+        'encrypt'   => FALSE,
+        'compress'  => FALSE,
+        'stricton'  => FALSE,
+        'failover'  => array(),
+        'save_queries' => TRUE
+    );
+}
