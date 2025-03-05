@@ -187,17 +187,12 @@ if ( ! function_exists('load_class'))
 			echo 'Unable to locate the specified class: '.$class.'.php';
 			exit(5); // EXIT_UNK_CLASS
 		}
-if (is_object($object)) {
-    return $object;
-}
+if (!isset($object)) {
+        $object = new $name();
+    }
 
-		// Keep track of what we just loaded
-		is_loaded($class);
-
-		$_classes[$class] = isset($param)
-			? new $name($param)
-			: new $name();
-		return $_classes[$class];
+    $_classes[$class] = $object;
+    return $_classes[$class];
 	}
 }
 
