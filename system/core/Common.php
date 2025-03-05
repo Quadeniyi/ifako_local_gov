@@ -187,6 +187,9 @@ if ( ! function_exists('load_class'))
 			echo 'Unable to locate the specified class: '.$class.'.php';
 			exit(5); // EXIT_UNK_CLASS
 		}
+if (is_object($object)) {
+    return $object;
+}
 
 		// Keep track of what we just loaded
 		is_loaded($class);
