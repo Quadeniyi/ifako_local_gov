@@ -26,6 +26,10 @@ RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache && \
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
+RUN mkdir -p /var/www/html/vendor && \
+    composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+
 # Expose port 10000 for PHP built-in server
 EXPOSE 10000
 
