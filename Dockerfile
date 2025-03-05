@@ -29,3 +29,6 @@ EXPOSE 80
 
 # Start Apache
 CMD ["apache2-foreground"]
+
+RUN apt-get update && apt-get install -y unzip
+RUN docker-php-ext-install pdo pdo_pgsql pgsql
