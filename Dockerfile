@@ -1,5 +1,8 @@
-# Use official PHP image
+# Use official PHP image with Apache
 FROM php:8.2-apache
+
+# Set working directory
+WORKDIR /var/www/html
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -7,21 +10,23 @@ RUN apt-get update && apt-get install -y \
     unzip \
     && docker-php-ext-install pdo pdo_pgsql pgsql
 
-# Enable Apache mod_rewrite (Fixes .htaccess error)
+# Enable Apache mod_rewrite (important for CodeIgniter)
 RUN a2enmod rewrite
 
-# Set working directory
-WORKDIR /var/www/html
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy existing application files
-COPY . .
+# Copy application source
+COPY . /var/www/html
 
-# Give correct permissions (ignore errors if directories don't exist)
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache || true
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port
-EXPOSE 80
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Expose port 10000 for PHP built-in server
+EXPOSE 10000
+
+# Start the PHP built-in server
 CMD ["php", "-S", "0.0.0.0:10000", "-t", "/var/www/html"]
