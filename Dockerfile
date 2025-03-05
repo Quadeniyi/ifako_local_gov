@@ -19,14 +19,18 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy project files to the container
 COPY . .
 
+# Ensure storage and cache directories exist
+RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Set correct permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Install PHP dependencies with Composer
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist || \
     (composer clear-cache && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist)
 
-# Set Apache configurations
+# Enable Apache Rewrite Module
 COPY ./.htaccess /var/www/html/.htaccess
 RUN a2enmod rewrite
 
