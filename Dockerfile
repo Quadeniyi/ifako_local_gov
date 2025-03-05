@@ -27,9 +27,10 @@ RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 # Copy application files
 COPY . /var/www/html
 
-# Install PHP dependencies
-RUN composer clear-cache && \
-    composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+# Install PHP dependencies (with retry on failure)
+RUN composer clear-cache \
+    && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs \
+    || (sleep 5 && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs)
 
 # Enable Apache modules
 RUN a2enmod rewrite
