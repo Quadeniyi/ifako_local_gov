@@ -10,8 +10,7 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql pgsql \
-    && docker-php-ext-enable pdo_pgsql
+    && docker-php-ext-install pdo_pgsql pgsql
 
 # Install Composer globally
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -20,18 +19,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY . .
 
 # Ensure storage and cache directories exist
-RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache
+RUN mkdir -p storage bootstrap/cache
 
 # Set correct permissions
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
 
 # Install PHP dependencies with Composer
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist || \
-    (composer clear-cache && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist)
+RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs || \
+    (composer clear-cache && COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs)
 
 # Enable Apache Rewrite Module
-COPY ./.htaccess /var/www/html/.htaccess
 RUN a2enmod rewrite
 
 # Expose port 80
