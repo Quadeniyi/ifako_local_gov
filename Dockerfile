@@ -24,3 +24,4 @@ EXPOSE 80
 
 # Start Apache
 CMD ["apache2-foreground"]
+CMD ["php", "-S", "0.0.0.0:10000", "-t", "/var/www/html"]
