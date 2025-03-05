@@ -1,41 +1,37 @@
-# Use official PHP image
+# Use an official PHP runtime as a parent image
 FROM php:8.1-apache
 
-# Install system dependencies required for PHP and Composer
+# Set working directory
+WORKDIR /var/www/html
+
+# Install required system packages
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
     libpq-dev \
-    libzip-dev \
-    zip \
-    && docker-php-ext-install \
-    pdo \
-    pdo_pgsql \
-    pgsql \
-    zip \
-    opcache
-
-# Set working directory
-WORKDIR /var/www/html
-
-# Copy application source code
-COPY . .
-
-# Ensure necessary directories exist
-RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Fix permissions (Fixing previous error)
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+    && docker-php-ext-install pdo pdo_pgsql pgsql \
+    && docker-php-ext-enable pdo_pgsql
 
 # Install Composer globally
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+# Copy project files to the container
+COPY . .
+
+# Set correct permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Install PHP dependencies with Composer
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist || \
+    (composer clear-cache && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist)
+
+# Set Apache configurations
+COPY ./.htaccess /var/www/html/.htaccess
+RUN a2enmod rewrite
 
 # Expose port 80
 EXPOSE 80
 
-# Start Apache
+# Start the Apache server
 CMD ["apache2-foreground"]
