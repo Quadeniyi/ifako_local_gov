@@ -29,6 +29,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
 RUN mkdir -p /var/www/html/vendor && \
     composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
+RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 10000 for PHP built-in server
 EXPOSE 10000
