@@ -52,5 +52,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'api';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
-$route['executives'] = 'api/executive';
-$route['api/executives'] = 'api/executive'; // Just in case
+$route['executive'] = 'api/executive';
+$route['api/executive'] = 'api/executive'; // Just in case

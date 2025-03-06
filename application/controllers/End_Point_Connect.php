@@ -365,8 +365,7 @@ function save_executive($executive_image, $executive_position, $executive_name) 
         $image_url = $upload['secure_url'];
 
         // Save only the URL in MySQL
-        $this->db->query("INSERT INTO executive (executive_image, executive_position, executive_name) 
-                          VALUES ('$image_url', '$executive_position', '$executive_name')");
+        $this->db->query("INSERT INTO executive (executive_image, executive_position, executive_name) VALUES ('$image_url', '$executive_position', '$executive_name')");
 
         if ($this->db->affected_rows() == 1) {
             $response = array('status_code' => '0', 'message' => 'Executive Saved Successfully');
