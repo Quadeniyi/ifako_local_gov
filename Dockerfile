@@ -1,4 +1,4 @@
-# Use the official PHP 8.2 Apache image as base
+#Use the official PHP 8.2 Apache image as base
 FROM php:8.2-apache
 
 # Set working directory
@@ -30,13 +30,13 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Copy application files
 COPY . /var/www/html
 
-# Remove composer.lock (Forcing fresh install)
-RUN rm -f composer.lock
+# Remove composer.lock and vendor directory (forcing a fresh install)
+RUN rm -f composer.lock \
+    && rm -rf vendor \
+    && composer clear-cache
 
 # Install PHP dependencies (Improved)
-RUN composer self-update \
-    && composer clear-cache \
-    && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs --verbose \
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs --verbose \
     || (sleep 5 && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs --verbose)
 
 # Enable Apache modules
