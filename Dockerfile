@@ -18,19 +18,20 @@ ENV COMPOSER_MEMORY_LIMIT=-1
 # Install Composer globally
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Ensure vendor and storage directories exist
+# Ensure necessary directories exist
 RUN mkdir -p /var/www/html/vendor /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Set permissions for storage and cache directories
-RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Copy application files
 COPY . /var/www/html
 
-# Install PHP dependencies (with retry on failure)
+# Install PHP dependencies (Improved)
 RUN composer clear-cache \
-    && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs \
-    || (sleep 5 && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs)
+    && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs --verbose \
+    || (sleep 5 && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs --verbose)
 
 # Enable Apache modules
 RUN a2enmod rewrite
