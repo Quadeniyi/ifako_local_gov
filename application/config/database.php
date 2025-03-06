@@ -75,14 +75,14 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn'      => '',
-    'hostname' => ($_SERVER['CI_ENV'] ?? 'production') === 'development' ? 'localhost' : 'dpg-cv3ipmt2ng1s7381a780-a.oregon-postgres.render.com',
-    'username' => ($_SERVER['CI_ENV'] ?? 'production') === 'development' ? 'root' : 'local_government_5bv9_user',
-    'password' => ($_SERVER['CI_ENV'] ?? 'production') === 'development' ? '@Ummat360' : 'your_render_db_password',
-    'database' => ($_SERVER['CI_ENV'] ?? 'production') === 'development' ? 'local_government' : 'local_government_5bv9',
+    'hostname' => (getenv('CI_ENV') ?: 'production') === 'development' ? 'localhost' : 'dpg-cv3ipmt2ng1s7381a780-a.oregon-postgres.render.com',
+    'username' => (getenv('CI_ENV') ?: 'production') === 'development' ? getenv('DB_LOCAL_USER') : getenv('DB_REMOTE_USER'),
+    'password' => (getenv('CI_ENV') ?: 'production') === 'development' ? getenv('DB_LOCAL_PASSWORD') : getenv('DB_REMOTE_PASSWORD'),
+    'database' => (getenv('CI_ENV') ?: 'production') === 'development' ? getenv('DB_LOCAL_NAME') : getenv('DB_REMOTE_NAME'),
     'dbdriver' => 'postgre',
     'dbprefix' => '',
     'pconnect' => FALSE,
-    'db_debug' => TRUE,
+    'db_debug' => (getenv('CI_ENV') ?: 'production') === 'development',  // Enable debugging only in local
     'cache_on' => FALSE,
     'cachedir' => '',
     'char_set' => 'utf8',
@@ -94,3 +94,4 @@ $db['default'] = array(
     'failover' => array(),
     'save_queries' => TRUE
 );
+

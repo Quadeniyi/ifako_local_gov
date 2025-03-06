@@ -1390,6 +1390,9 @@ public $config;
 	protected function &_ci_get_component($component)
 	{
 		$CI =& get_instance();
+		 if (!property_exists($CI, $component)) {
+        $CI->$component = null; // Initialize to prevent dynamic property error
+    }
 		return $CI->$component;
 	}
 

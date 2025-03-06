@@ -340,10 +340,18 @@ abstract class REST_Controller extends CI_Controller {
      * @param string $config Configuration filename minus the file extension
      * e.g: my_rest.php is passed as 'my_rest'
      */
-    public function __construct($config = 'rest')
-    {
-        parent::__construct();
-        $this->preflight_checks();
+    private $config; //  Declare the property explicitly
+
+public function __construct($config = 'rest')
+{
+    parent::__construct();
+    
+    //  Assign the configuration properly to avoid dynamic property issues
+    $this->config = $config; 
+
+    $this->preflight_checks();
+
+
         // Set the default value of global xss filtering. Same approach as CodeIgniter 3
         $this->_enable_xss = ($this->config->item('global_xss_filtering') === TRUE);
         // Don't try to parse template variables like {elapsed_time} and {memory_usage}
