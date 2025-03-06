@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql pgsql
+    libzip-dev \
+    zip \
+    && docker-php-ext-install pdo pdo_pgsql pgsql zip
 
 # Set environment variable for Composer to prevent memory issues
 ENV COMPOSER_MEMORY_LIMIT=-1
@@ -28,8 +30,12 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Copy application files
 COPY . /var/www/html
 
+# Remove composer.lock (Forcing fresh install)
+RUN rm -f composer.lock
+
 # Install PHP dependencies (Improved)
-RUN composer clear-cache \
+RUN composer self-update \
+    && composer clear-cache \
     && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs --verbose \
     || (sleep 5 && composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-reqs --verbose)
 
