@@ -11,7 +11,7 @@ class Api extends REST_Controller {
 function __construct(){
     parent::__construct();
     $this->load->model('Api_model');
-     $this->db = $this->load->database();
+$this->load->database(); // ✅ Load database correctly
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, x-api-key,client-id');
     header('Access-Control-Allow-Credentials: true');
