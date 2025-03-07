@@ -6,8 +6,8 @@ require APPPATH . 'libraries/REST_Controller.php';
 require_once APPPATH . '/controllers/End_Point_Connect.php';
 require APPPATH . 'libraries/Format.php';
 class Api extends REST_Controller {
- private $config;
- private $db;  
+  protected $config;
+    protected $db;  
 function __construct(){
     parent::__construct();
     $this->load->model('Api_model');
